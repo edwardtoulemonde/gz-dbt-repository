@@ -7,10 +7,47 @@ sources:
     tables:
       - name: product
         identifier: raw_gz_product
-        description: dataset with products_id and purchSE_PRICE
+        description: dataset with products_id and purchase_price
+        columns:
+          - name: products_id
+            description: primary key of the table
+            tests:
+              - unique
+              - not_null  
+          - name: purchase_price
+            description: price in euro of the product
       - name: sales
         identifier: raw_gz_sales
-        description: sales data with date_date,orders_id, pdt_id, revenue, quantity
+        description: sales data with date_date, orders_id, products_id, revenue, quantity
+        columns:
+          - name: date_date
+            description: date of the purchase
+          - name: orders_id
+            description: identifier of the order, not primary key
+          - name: "(orders_id ||'_'||pdt_id)"
+            tests:
+              - unique
+              - not_null
+          - name: products_id
+            description: identifier of the product
+          - name: revenue
+            description: revenue generated from the order
+          - name: quantity
+            description: quantity ordered
       - name: ship
         identifier: raw_gz_ship
-        description: ship details with orders_id, shipping_fee, shipping_fee_1, logCost, ship_cost
+        description: ship details with orders_id, shipping_fee, logCost, ship_cost
+        columns:
+          - name: orders_id
+            description: primary key of the table
+            tests:
+              - unique
+              - not_null  
+          - name: shipping_fee
+            description: shipping fee paid by the customer
+          - name: logCost
+            description: logistic cost of the order
+          - name: ship_cost
+            description: shipping cost paid by the vendor
+
+  
