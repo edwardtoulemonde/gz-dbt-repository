@@ -49,5 +49,3 @@ sources:
             description: logistic cost of the order
           - name: ship_cost
             description: shipping cost paid by the vendor
-
-  
