@@ -49,6 +49,79 @@ sources:
             description: logistic cost of the order
           - name: ship_cost
             description: shipping cost paid by the vendor
+      - name: adwords
+        identifier: raw_gz_adwords
+        description: adwords adds
+        columns:
+          - name: date_date
+            description: activity date
+          - name: paid_source
+            description: ad supplier
+          - name: campaign_key
+            description: campaign_key
+          - name: camPGN_name
+            description: campagne name
+          - name: ads_cost
+            description: total ads cost for this supplier
+          - name: impression
+            description: number of impression
+          - name: click
+            description: number of click
+      - name: bing
+        identifier: raw_gz_bing
+        description: bing adds
+        columns:
+          - name: date_date
+            description: activity date
+          - name: paid_source
+            description: ad supplier
+          - name: campaign_key
+            description: campaign_key
+          - name: camPGN_name
+            description: campagne name
+          - name: ads_cost
+            description: total ads cost for this supplier
+          - name: impression
+            description: number of impression
+          - name: click
+            description: number of click
+      - name: criteo
+        identifier: raw_gz_criteo
+        description: criteo adds
+        columns:
+          - name: date_date
+            description: activity date
+          - name: paid_source
+            description: ad supplier
+          - name: campaign_key
+            description: campaign_key
+          - name: camPGN_name
+            description: campagne name
+          - name: ads_cost
+            description: total ads cost for this supplier
+          - name: impression
+            description: number of impression
+          - name: click
+            description: number of click
+      - name: facebook
+        identifier: raw_gz_facebook
+        description: facebook adds
+        columns:
+          - name: date_date
+            description: activity date
+          - name: paid_source
+            description: ad supplier
+          - name: campaign_key
+            description: campaign_key
+          - name: camPGN_name
+            description: campagne name
+          - name: ads_cost
+            description: total ads cost for this supplier
+          - name: impression
+            description: number of impression
+          - name: click
+            description: number of click
+
 
 models:
   - name: stg_raw__sales
