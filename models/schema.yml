@@ -142,6 +142,7 @@ models:
         description: revenue
       - name: quantity
         description: quantity of product
+
   - name: stg_raw__product
     description: clean raw product and rename and transform purchase price
     columns:
@@ -152,6 +153,7 @@ models:
           - not_null
       - name: purchase_price
         description: rename and transform purchase price from string to float
+
   - name: stg_raw__ship
     description: clean raw ship
     columns:
@@ -166,6 +168,7 @@ models:
         description: logistic costs
       - name: ship_cost
         description: shipping costs transform from string to float
+
   - name: int_sales_margin
     description: margin and purchase cost calculation from stg_raw__sales join stg_raw_product
     columns:
@@ -190,6 +193,7 @@ models:
         description: margin
       - name: purchase_cost
         description: purchase_cost
+
   - name: int_orders_margin
     description: orders aggregation for revenue quantity purchase_cost and margin
     columns:
@@ -208,6 +212,7 @@ models:
         description: purchase_cost
       - name: margin
         description: margin
+
   - name: int_orders_operational
     description: orders aggregation and add operational margin calculation
     columns:
@@ -234,6 +239,7 @@ models:
         description: logcost
       - name: ship_cost
         description: ship_cost
+
   - name: finance_days
     description: date aggregation and finance calculation
     columns:
@@ -252,30 +258,56 @@ models:
         description: margin
       - name: operational_margin
         description: operational_margin
+
   - name: int_campaigns_day
-    description: aggregation of campaigns adwords, facebook, criteo, bing grouped by day
+    description: ads costs impressions and clicks aggregated
     columns:
       - name: date_date
-        description: date_date
+        description: date
         tests:
           - unique
           - not_null
-      - name: date_date
-        description: activity date
-      - name: paid_source
-        description: ad supplier
-        tests:
-          - accepted_values:
-              values: ['Criteo', 'Bing', 'Facebook', 'Adwords']
-      - name: campaign_name
-        description: campaign_name
-      - name: campaign_key
-        description: campaign_key
-      - name: campaign_name
-        description: campagne name
       - name: ads_cost
-        description: total ads cost for this supplier
+        description: total ads_cost
       - name: impression
-        description: number of impression
+        description: total impression    
       - name: click
-        description: number of click
+        description: total click
+
+  - name: finance_campaigns_day
+    description: finance campaign join finance
+    columns:
+      - name: date_date
+        description: date
+        tests:
+          - unique
+          - not_null
+      - name: ads_margin
+        description: operational margin - ads cost
+      - name: average_basket
+        description: SUM(revenue)/COUNT(orders_id)
+      - name: margin
+        description: margin
+      - name: operational_margin
+        description: operational_margin
+      - name: ads_cost
+        description: ads_cost
+
+  - name: finance_campaigns_month
+    description: finance campaign join finance aggregated by month
+    columns:
+      - name: month
+        description: month aggregated
+        tests:
+          - unique
+          - not_null
+      - name: ads_margin
+        description: operational margin - ads cost
+      - name: average_basket
+        description: SUM(revenue)/COUNT(orders_id)
+      - name: margin
+        description: margin
+      - name: operational_margin
+        description: operational_margin
+      - name: ads_cost
+        description: ads_cost
