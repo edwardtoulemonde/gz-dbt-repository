@@ -1,0 +1,181 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: gz_raw_data
+    description: Greenweez data
+    tables:
+      - name: product
+        identifier: raw_gz_product
+        description: dataset with products_id and purchase_price
+        columns:
+          - name: products_id
+            description: primary key of the table
+            tests:
+              - unique
+              - not_null  
+          - name: purchase_price
+            description: price in euro of the product
+      - name: sales
+        identifier: raw_gz_sales
+        description: sales data with date_date, orders_id, products_id, revenue, quantity
+        columns:
+          - name: date_date
+            description: date of the purchase
+          - name: orders_id
+            description: identifier of the order, not primary key
+          - name: "(orders_id ||'_'||pdt_id)"
+            tests:
+              - unique
+              - not_null
+          - name: products_id
+            description: identifier of the product
+          - name: revenue
+            description: revenue generated from the order
+          - name: quantity
+            description: quantity ordered
+      - name: ship
+        identifier: raw_gz_ship
+        description: ship details with orders_id, shipping_fee, logCost, ship_cost
+        columns:
+          - name: orders_id
+            description: primary key of the table
+            tests:
+              - unique
+              - not_null  
+          - name: shipping_fee
+            description: shipping fee paid by the customer
+          - name: logCost
+            description: logistic cost of the order
+          - name: ship_cost
+            description: shipping cost paid by the vendor
+
+models:
+  - name: stg_raw__sales
+    description: clean raw sales and creating primary key
+    columns :
+      - name: date_date
+        description: purchase date
+      - name: sales_primary_key
+        description: concat of orders_id and products id as a primary key
+        tests:
+          - unique
+          - not_null
+      - name: orders_id
+        description: orders_id
+      - name: products_id
+        description: id of product
+      - name: revenue
+        description: revenue
+      - name: quantity
+        description: quantity of product
+  - name: stg_raw__product
+    description: clean raw product and rename and transform purchase price
+    columns:
+      - name: products_id
+        description: id of product primary key
+        tests:
+          - unique
+          - not_null
+      - name: purchase_price
+        description: rename and transform purchase price from string to float
+  - name: stg_raw__ship
+    description: clean raw ship
+    columns:
+      - name: orders_id
+        description: orders_id
+        tests:
+          - unique
+          - not_null
+      - name: shipping_fee
+        description: shipping revenue
+      - name: logcost
+        description: logistic costs
+      - name: ship_cost
+        description: shipping costs transform from string to float
+  - name: int_sales_margin
+    description: margin and purchase cost calculation from stg_raw__sales join stg_raw_product
+    columns:
+      - name: products_id
+        description: id of product
+      - name: date_date
+        description: purchase date
+      - name: sales_primary_key
+        description: concat of orders_id and products id as a primary key
+        tests:
+          - unique
+          - not_null
+      - name: orders_id
+        description: orders_id
+      - name: revenue
+        description: revenue
+      - name: quantity
+        description: quantity
+      - name: purchase_price
+        description: purchase_price
+      - name: margin
+        description: margin
+      - name: purchase_cost
+        description: purchase_cost
+  - name: int_orders_margin
+    description: orders aggregation for revenue quantity purchase_cost and margin
+    columns:
+      - name: orders_id
+        description: orders_id
+        tests:
+          - unique
+          - not_null
+      - name: date_date
+        description: date
+      - name: revenue
+        description: revenue
+      - name: quantity
+        description: quantity 
+      - name: purchase_cost
+        description: purchase_cost
+      - name: margin
+        description: margin
+  - name: int_orders_operational
+    description: orders aggregation and add operational margin calculation
+    columns:
+      - name: orders_id
+        description: orders_id
+        tests:
+          - unique
+          - not_null
+      - name: date_date
+        description: date
+      - name: operational_margin 
+        description: margin + shipping_fee - logcost - ship_cost
+      - name: revenue
+        description: revenue
+      - name: quantity
+        description: quantity
+      - name: purchase_cost
+        description: purchase_cost
+      - name: margin
+        description: margin
+      - name: shipping_fee
+        description: shipping_fee
+      - name: logcost
+        description: logcost
+      - name: ship_cost
+        description: ship_cost
+  - name: finance_days
+    description: date aggregation and finance calculation
+    columns:
+      - name: date_date
+        description: date
+        tests:
+          - unique
+          - not_null
+      - name: nb_transactions
+        description: COUNT(orders_id)
+      - name: revenue
+        description: revenue
+      - name: average_basket
+        description: SUM(revenue)/COUNT(orders_id)
+      - name: margin
+        description: margin
+      - name: operational_margin
+        description: operational_margin
