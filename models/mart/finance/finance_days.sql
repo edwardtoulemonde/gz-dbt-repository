@@ -1,5 +1,4 @@
 SELECT
-{{config(materialized='table')}}
 date_date,
 COUNT(orders_id) AS nb_transactions,
 SUM(revenue) AS revenue,
